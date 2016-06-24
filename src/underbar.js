@@ -267,7 +267,7 @@
         if(obj[key] === undefined){
           obj[key] = val;
         } 
-      })
+      });
     });
     return obj;
   };
@@ -313,6 +313,17 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var obj = {};
+
+    return function(){
+      var args = JSON.stringify(arguments);
+
+      if(obj[args] === undefined){
+        return obj[args] = func.apply(null, arguments);
+      } else {
+        return obj[args];
+      }
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -322,6 +333,9 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    var args = Array.prototype.slice.call(arguments, 2);
+
+    return setTimeout(function(){ return func.apply(null, args) }, wait);
   };
 
 
