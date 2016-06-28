@@ -364,7 +364,7 @@
     return arr;
   };
 
-console.log(_.shuffle([1,2,3]))
+
 
   /**
    * ADVANCED
@@ -399,16 +399,46 @@ console.log(_.shuffle([1,2,3]))
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    return _.reduce(nestedArray, function(list, item){
+      if(Array.isArray(item)){
+        return list.concat(_.flatten(item));
+      } else {
+        list.push(item);
+        return list; 
+      }
+    }, []);
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+    var key = Array.prototype.slice.call(arguments[0]);
+    var args = Array.prototype.slice.call(arguments, 1);
+
+    _.each(args,function(array){
+      key = _.reduce(array, function(list, item){
+        if(_.contains(key,item)){
+          list.push(item);
+        }
+        return list;
+      }, [])
+    });
+    return key;
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    var args = Array.prototype.slice.call(arguments, 1);
+
+    args = _.flatten(args);
+
+    return _.reduce(array, function(list, item){
+      if(!_.contains(args,item)){
+        list.push(item);
+      }
+      return list;
+    }, []);    
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
